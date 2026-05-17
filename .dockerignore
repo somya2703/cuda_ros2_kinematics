@@ -1,0 +1,26 @@
+# Build artifacts
+build/
+install/
+log/
+
+# Git
+.git/
+.gitignore
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Any previous zip outputs
+*.zip

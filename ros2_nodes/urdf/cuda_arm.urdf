@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+<robot name="cuda_arm">
+
+  <!-- ─── Materials ──────────────────────────────────────────────── -->
+  <material name="dark_grey">  <color rgba="0.2 0.2 0.2 1.0"/> </material>
+  <material name="mid_grey">   <color rgba="0.5 0.5 0.5 1.0"/> </material>
+  <material name="light_grey"> <color rgba="0.8 0.8 0.8 1.0"/> </material>
+  <material name="orange">     <color rgba="0.9 0.4 0.1 1.0"/> </material>
+  <material name="white">      <color rgba="1.0 1.0 1.0 1.0"/> </material>
+
+  <!-- ─── Base ───────────────────────────────────────────────────── -->
+  <link name="world"/>
+
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.04" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.075" length="0.08"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.04" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.075" length="0.08"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="4.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ─── Joint 1 — shoulder pan (z-axis rotation) ──────────────── -->
+  <!-- DH: a=0, d=0.0892, alpha=pi/2 -->
+  <joint name="shoulder_pan" type="revolute">
+    <parent link="base_link"/>
+    <child  link="shoulder_link"/>
+    <origin xyz="0 0 0.0892" rpy="0 0 0"/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="150" velocity="3.14"/>
+  </joint>
+
+  <link name="shoulder_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.055"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <visual>
+      <origin xyz="0.2125 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder radius="0.038" length="0.425"/></geometry>
+      <material name="light_grey"/>
+    </visual>
+    <inertial>
+      <mass value="3.7"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ─── Joint 2 — shoulder lift ───────────────────────────────── -->
+  <!-- DH: a=0.425, d=0, alpha=0 -->
+  <joint name="shoulder_lift" type="revolute">
+    <parent link="shoulder_link"/>
+    <child  link="upper_arm_link"/>
+    <origin xyz="0.425 0 0" rpy="0 1.5708 0"/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="150" velocity="3.14"/>
+  </joint>
+
+  <link name="upper_arm_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.048"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.196" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.032" length="0.392"/></geometry>
+      <material name="light_grey"/>
+    </visual>
+    <inertial>
+      <mass value="8.4"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ─── Joint 3 — elbow ────────────────────────────────────────── -->
+  <!-- DH: a=0.392, d=0, alpha=0 -->
+  <joint name="elbow" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child  link="forearm_link"/>
+    <origin xyz="0 0 0.392" rpy="0 0 0"/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="150" velocity="3.14"/>
+  </joint>
+
+  <link name="forearm_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.040"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.05465" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.026" length="0.1093"/></geometry>
+      <material name="mid_grey"/>
+    </visual>
+    <inertial>
+      <mass value="2.3"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ─── Joint 4 — wrist 1 ──────────────────────────────────────── -->
+  <!-- DH: a=0, d=0.1093, alpha=pi/2 -->
+  <joint name="wrist_1" type="revolute">
+    <parent link="forearm_link"/>
+    <child  link="wrist_1_link"/>
+    <origin xyz="0 0 0.1093" rpy="0 1.5708 0"/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="54" velocity="6.28"/>
+  </joint>
+
+  <link name="wrist_1_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.034"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.0475" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.022" length="0.095"/></geometry>
+      <material name="mid_grey"/>
+    </visual>
+    <inertial>
+      <mass value="1.2"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- ─── Joint 5 — wrist 2 ──────────────────────────────────────── -->
+  <!-- DH: a=0, d=0.095, alpha=-pi/2 -->
+  <joint name="wrist_2" type="revolute">
+    <parent link="wrist_1_link"/>
+    <child  link="wrist_2_link"/>
+    <origin xyz="0 0 0.095" rpy="0 -1.5708 0"/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="54" velocity="6.28"/>
+  </joint>
+
+  <link name="wrist_2_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.030"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.020" length="0.082"/></geometry>
+      <material name="mid_grey"/>
+    </visual>
+    <inertial>
+      <mass value="1.2"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- ─── Joint 6 — wrist 3 ──────────────────────────────────────── -->
+  <!-- DH: a=0, d=0.082, alpha=0 -->
+  <joint name="wrist_3" type="revolute">
+    <parent link="wrist_2_link"/>
+    <child  link="wrist_3_link"/>
+    <origin xyz="0 0 0.082" rpy="0 0 0"/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="54" velocity="6.28"/>
+  </joint>
+
+  <link name="wrist_3_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><sphere radius="0.026"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ─── End-effector (tool frame) ─────────────────────────────── -->
+  <joint name="wrist_3_to_ee" type="fixed">
+    <parent link="wrist_3_link"/>
+    <child  link="ee_link"/>
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <link name="ee_link">
+    <visual>
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry><box size="0.04 0.04 0.03"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+  </link>
+
+</robot>

@@ -1,0 +1,163 @@
+
+#  Services
+#  --------
+#  kinematics   full arm stack (all 3 ROS 2 nodes)  [default: `docker compose up`]
+#  benchmark    runs the three CUDA benchmarks and exits
+#  dev          interactive dev shell with source mounted for live editing
+#
+#  GPU access
+#  ----------
+#  All services request all available NVIDIA GPUs via the `deploy` key.
+#  Requires the NVIDIA Container Toolkit:
+#    https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html
+#
+#  Quick start
+#  -----------
+#    docker compose up kinematics          # run the arm stack
+#    docker compose run --rm benchmark     # print benchmark table and exit
+#    docker compose run --rm dev bash      # interactive shell
+
+
+x-gpu: &gpu
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+x-ros-env: &ros-env
+  environment:
+    - ROS_DOMAIN_ID=0
+    - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    - DISPLAY=${DISPLAY:-:0}          # forward X11 for RViz
+    - NVIDIA_VISIBLE_DEVICES=all
+    - NVIDIA_DRIVER_CAPABILITIES=compute,graphics,utility
+
+services:
+
+  # Full arm stack
+  kinematics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: cuda_ros2_kinematics:latest
+    <<: [*gpu, *ros-env]
+    network_mode: host          # simplest DDS peer-discovery setup
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw   # RViz X11 socket
+      - ./trajectories:/trajectories:ro    # optional: mount trajectory CSV files
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /ws/install/setup.bash &&
+        ros2 launch cuda_ros2_kinematics arm_bringup.launch.py
+          trajectory_file:=$${TRAJECTORY_FILE:-}
+          publish_rate_hz:=$${PUBLISH_RATE_HZ:-10.0}
+      "
+    restart: unless-stopped
+
+  #Benchmark suite (run-and-exit) 
+  benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: cuda_ros2_kinematics:latest
+    <<: [*gpu, *ros-env]
+    command: >
+      bash -c "
+        echo '=== Batch FK ===' && batch_fk_benchmark &&
+        echo '' &&
+        echo '=== Jacobian ===' && jacobian_benchmark &&
+        echo '' &&
+        echo '=== IK Solver ===' && ik_benchmark
+      "
+
+  # Simulation with RViz2 
+  simulate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: cuda_ros2_kinematics:latest
+    <<: [*gpu, *ros-env]
+    network_mode: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./trajectories:/trajectories:rw
+      - ./results:/results:rw
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - DISPLAY=${DISPLAY:-:0}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,graphics,utility
+      - RECORD=${RECORD:-false}
+      - BAG_NAME=${BAG_NAME:-session}
+      - TRAJECTORY_FILE=${TRAJECTORY_FILE:-}
+      - PUBLISH_RATE_HZ=${PUBLISH_RATE_HZ:-10.0}
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /ws/install/setup.bash &&
+        ros2 launch cuda_ros2_kinematics arm_bringup.launch.py
+          rviz:=true
+          record:=$${RECORD:-false}
+          trajectory_file:=$${TRAJECTORY_FILE:-}
+          publish_rate_hz:=$${PUBLISH_RATE_HZ:-10.0}
+      "
+
+  # Simulation without RViz (headless, for bag-only recording)
+  simulate_headless:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: cuda_ros2_kinematics:latest
+    <<: [*gpu, *ros-env]
+    network_mode: host
+    volumes:
+      - ./trajectories:/trajectories:rw
+      - ./results:/results:rw
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,graphics,utility
+      - BAG_NAME=${BAG_NAME:-session}
+      - TRAJECTORY_FILE=${TRAJECTORY_FILE:-}
+      - PUBLISH_RATE_HZ=${PUBLISH_RATE_HZ:-10.0}
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        source /ws/install/setup.bash &&
+        ros2 launch cuda_ros2_kinematics arm_bringup.launch.py
+          rviz:=false
+          record:=true
+          trajectory_file:=$${TRAJECTORY_FILE:-}
+          publish_rate_hz:=$${PUBLISH_RATE_HZ:-10.0}
+      "
+
+
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder         
+    image: cuda_ros2_kinematics:dev
+    <<: [*gpu, *ros-env]
+    network_mode: host
+    volumes:
+      - .:/ws/src/cuda_ros2_kinematics:rw  
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - dev-build-cache:/ws/build          
+    working_dir: /ws/src/cuda_ros2_kinematics
+    stdin_open: true
+    tty: true
+    command: bash
+
+volumes:
+  dev-build-cache:

@@ -1,0 +1,31 @@
+# Build artefacts
+build/
+install/
+log/
+__pycache__/
+*.pyc
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
+# Compiled objects and binaries
+*.o
+*.a
+*.so
+*.out
+
+# ROS 2 install space
+install/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+#env
+.env

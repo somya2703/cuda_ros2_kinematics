@@ -1,0 +1,29 @@
+── GPU ──────────────────────────────────────────────────────
+  NVIDIA GeForce RTX 4050 Laptop GPU | driver  595.58.03 |  6141 MiB VRAM
+─────────────────────────────────────────────────────────────
+=== DEFAULT SESSION ==
+
+Files:             default_session_0.db3
+Bag size:          1.5 MiB
+Storage id:        sqlite3
+Duration:          71.504839653s
+Start:             May 17 2026 01:08:56.974102890 (1778980136.974102890)
+End:               May 17 2026 01:10:08.478942543 (1778980208.478942543)
+Messages:          2148
+Topic information: Topic: /ee_pose | Type: geometry_msgs/msg/PoseStamped | Count: 716 | Serialization Format: cdr
+                   Topic: /joint_states | Type: sensor_msgs/msg/JointState | Count: 716 | Serialization Format: cdr
+                   Topic: /trajectory | Type: trajectory_msgs/msg/JointTrajectory | Count: 716 | Serialization Format: cdr
+
+=== CUSTOM SESSION ==
+
+Files:             custom_session_0.db3
+Bag size:          773.9 KiB
+Storage id:        sqlite3
+Duration:          72.400223495s
+Start:             May 17 2026 08:58:58.532073151 (1779008338.532073151)
+End:               May 17 2026 09:00:10.932296646 (1779008410.932296646)
+Messages:          1089
+Topic information: Topic: /ee_pose | Type: geometry_msgs/msg/PoseStamped | Count: 363 | Serialization Format: cdr
+                   Topic: /joint_states | Type: sensor_msgs/msg/JointState | Count: 363 | Serialization Format: cdr
+                   Topic: /trajectory | Type: trajectory_msgs/msg/JointTrajectory | Count: 363 | Serialization Format: cdr
+

@@ -1,0 +1,36 @@
+── GPU ──────────────────────────────────────────────────────
+  NVIDIA GeForce RTX 4050 Laptop GPU | driver  595.58.03 |  6141 MiB VRAM
+─────────────────────────────────────────────────────────────
+=== Batch FK ===
+Warming up GPU...
+Done.
+
+=== Batch FK Benchmark (CPU vs CUDA) — best of 3 ===
+----------------------------------------------------------------------
+N =    1000 | CPU:   0.198 ms | GPU:   0.110 ms | Speedup:   1.8x | OK
+N =    5000 | CPU:   1.016 ms | GPU:   0.187 ms | Speedup:   5.4x | OK
+N =   10000 | CPU:   2.064 ms | GPU:   0.289 ms | Speedup:   7.1x | OK
+N =   50000 | CPU:  11.603 ms | GPU:   1.121 ms | Speedup:  10.3x | OK
+N =  100000 | CPU:  23.604 ms | GPU:   2.191 ms | Speedup:  10.8x | OK
+
+=== Jacobian ===
+Warming up GPU...
+Done.
+
+=== Jacobian Benchmark (CPU vs CUDA) — best of 3 ===
+-----------------------------------------------------------------
+N =   1000 | CPU:    0.203 ms | GPU:    0.136 ms | Speedup:   1.5x
+N =   5000 | CPU:    1.050 ms | GPU:    0.355 ms | Speedup:   3.0x
+N =  10000 | CPU:    2.109 ms | GPU:    0.594 ms | Speedup:   3.6x
+N =  50000 | CPU:   10.587 ms | GPU:    2.606 ms | Speedup:   4.1x
+
+=== IK Solver ===
+Warming up GPU...
+Done.
+
+=== IK Benchmark (CPU vs CUDA) — best of 3 ===
+------------------------------------------------------------------------
+M =    50 | CPU:    0.904 ms (conv 45/50) | GPU:    1.896 ms (conv 45/50) | Speedup:   0.5x
+M =   100 | CPU:    1.780 ms (conv 90/100) | GPU:    1.895 ms (conv 90/100) | Speedup:   0.9x
+M =   500 | CPU:    8.841 ms (conv 458/500) | GPU:    1.919 ms (conv 458/500) | Speedup:   4.6x
+M =  1000 | CPU:   17.678 ms (conv 914/1000) | GPU:    1.927 ms (conv 914/1000) | Speedup:   9.2x

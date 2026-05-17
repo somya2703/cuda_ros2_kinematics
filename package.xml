@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd"
+            schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>cuda_ros2_kinematics</name>
+  <version>0.1.0</version>
+  <description>
+    GPU-accelerated 6-DOF robot arm kinematics with ROS 2 integration.
+    Provides batch FK, Jacobian, and gradient-descent IK on CUDA,
+    wrapped by a clean C++ library and exposed through ROS 2 nodes.
+  </description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <!-- Build tooling -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_gtest</buildtool_depend>
+
+  <!-- C++ / CUDA dependencies -->
+  <depend>eigen3_cmake_module</depend>
+  <build_depend>libgtest-dev</build_depend>
+
+  <!-- ROS 2 message dependencies -->
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>robot_state_publisher</depend>
+
+  <!-- Test -->
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
