@@ -47,15 +47,6 @@ docker compose up kinematics
 docker compose run --rm benchmark
 ```
 
-Expected output:
-```
-=== Batch FK ===
-N =    100 | CPU:   4.51 ms | GPU:   0.18 ms | Speedup:  25.1x | Match: OK
-N =   1000 | CPU:  45.20 ms | GPU:   1.24 ms | Speedup:  36.5x | Match: OK
-N =  10000 | CPU: 451.80 ms | GPU:   4.80 ms | Speedup:  94.1x | Match: OK
-...
-```
-
 ### Open a development shell
 
 ```bash
